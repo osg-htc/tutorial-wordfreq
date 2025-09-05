@@ -7,24 +7,29 @@ ospool:
 
 ## Introduction
 
-This tutorial shows you how to submit multiple jobs from a single submit file. This enables you to submit your workload without having to create one submit file per task. Use this guide as an introduction to learning the different ways to submit multiple jobs.
+This tutorial shows you how to submit multiple jobs from a single submit file. This enables you to submit your workload without having to create one submit file per task. Use this guide as an introduction to learning how to submit a list of tasks as multiple jobs.
 
 ## Our list of tasks
 
-Imagine you want to analyze how word usage varies from book to book or author to author over a collection of books. The type of workflow covered in this tutorial can be used to describe workflows that take have different input files or parameters from job to job.
+Imagine you want to analyze how word usage varies from book to book or author to author over a collection of books. This is a common workflow shape, where you have a list of tasks that require different input files or parameters, but the same overall analysis.
+
+Get the materials:
 
 1. Log in to your OSPool Access Point.
 1. Download the materials for this tutorial using the following command:
-
-```
-git clone https://github.com/osg-htc/tutorial-wordfreq
-```
+	```
+	git clone https://github.com/osg-htc/tutorial-wordfreq
+	```
+1. Change into the `tutorial-wordfreq` directory:
+	```
+	cd tutorial-wordfreq
+	```
 
 ## Submit a single task: analyze one book
 
 ### Test the command
 
-Let's test our analysis. We can analyze the book `Alice_in_Wonderland.txt` by running the `wordcount.py` script: 
+Let's test our analysis to understand the expected behavior. We can analyze the book `Alice_in_Wonderland.txt` by running the `wordcount.py` script: 
 
 ```
 ./wordcount.py Alice_in_Wonderland.txt
@@ -38,14 +43,14 @@ rm counts.Alice_in_Wonderland.tsv
 
 ### Create a submit file
 
-Let's translate this analysis into a form that HTCondor understands, so it can run the analysis for you. We describe this analysis in the form of a submit file.
+Let's translate this analysis into a form that HTCondor understands, so it can run the analysis for us. We describe this analysis in the form of a submit file.
 
-Two key components of our analysis are
+Two key components of our analysis are:
 
-1. The command (`./wordcount.py`)
+1. The executable (`wordcount.py`)
 2. The input file(s) (`Alice_in_Wonderland.txt`)
 
-In HTCondor's submit file syntax, we describe these with the `executable` and `arguments` options:
+In HTCondor's submit file syntax, we describe the command we ran with the `executable` and `arguments` options:
 
 ```
 executable = wordcount.py
@@ -57,7 +62,7 @@ everything else that follows the script when we run it, like the test above.
 
 The input file for this job is the `Alice_in_Wonderland.txt` 
 text file. While we provided the name as in the `arguments`, we *also* need
-to explicitly tell HTCondor to transfer the corresponding file.
+to explicitly tell HTCondor to transfer the corresponding file from the Access Point (the machine you're currently on) to the Execution Point (the machine where your job runs).
 We include the file name in the following submit file option: 
 
 ```
@@ -66,9 +71,7 @@ transfer_input_files = Alice_in_Wonderland.txt
 
 There are other submit file options that control other aspects of the job, like 
 where to save error and logging information, and how many resources to request per 
-job.
-
-This tutorial has a sample submit file (`wordcount.sub`) with these submit file options filled in: 
+job. This tutorial has a sample submit file (`wordcount.sub`) with these submit file options filled in for you: 
 
 ```
 executable = wordcount.py
@@ -87,13 +90,13 @@ request_disk   = 1GB
 queue 1
 ``` 
 
-Confirm the contents of the submit file.
+Confirm the contents of the submit file by printing it out:
 
 ```
 cat wordcount.sub
 ```
 
-We will now submit our one-book analysis to the OSPool using HTCondor.
+We are now ready to submit our one-book analysis to the OSPool using HTCondor.
 
 ### Submit and monitor the job
 
@@ -103,9 +106,9 @@ After confirming the submit file, submit the job:
 condor_submit wordcount.sub
 ```
 
-HTCondor will then print out a unique job ID.
+HTCondor will then print out a unique job ID corresponding to this submission.
 
-Check the job's progress using `condor_q`.
+Check the job's progress using `condor_q`, which will print out a table of your job'(s) status.
 
 ```
 condor_q
@@ -116,7 +119,7 @@ queue in real time (use the keyboard shortcut `Ctrl` + `C` to exit).
 
 Once the job finishes, you should see the same `counts.Alice_in_Wonderland.tsv` output when you enter `ls`.
 
-## Analyze multiple books
+## Submit a list of tasks: analyze multiple books
 
 Now suppose you want to analyze multiple books - more than one at a time. 
 You could create a separate submit file for each book, and submit all of the
@@ -129,11 +132,9 @@ submit many jobs from one submit file.
 
 ### Make a list
 
-HTCondor can loop through a list and submit one job per line of that list - this is perfect for running the same analysis for different books!
+HTCondor can loop through a list and submit one job per line of that list - this is perfect for running the *same* analysis for *different* books!
 
-First, let's make a list of items that are different for each task we want to run.
-
-In this example, the main difference is the books we want to analyze. So, our list should contain the names of these books.
+First, let's make a list of items that are different for each task we want to run. In this example, the main difference is the books we want to analyze. So, our list should contain the names of these books.
 
 We can easily create this list by using an `ls` command and sending the output to a text file that we'll call `book.list`: 
 
@@ -195,9 +196,9 @@ arguments = $(book)
 transfer_input_files = $(book)
 ```
 
-### Submit and monitor the Job
+### Submit and monitor the jobs
 
-Let's submit all of our jobs. 
+Let's submit all of our jobs.:
 
 ```
 condor_submit many-wordcount.sub
@@ -206,5 +207,4 @@ condor_submit many-wordcount.sub
 This will now submit five jobs (one for each book on our list). Once all five 
 have finished running, we should see five "counts" files, one for each book in the directory. 
 
-If you don't see all five "counts" files, consider investigating the log files and see if
-you can identify what caused that to happen.
+If you don't see all five "counts" files, consider investigating the log, error, and output files and see if you can identify what caused that to happen.
