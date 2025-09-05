@@ -1,0 +1,14 @@
+executable = wordcount.py
+arguments = Alice_in_Wonderland.txt
+
+log = log/job.$(Cluster).$(Process).log
+error = err/job.$(Cluster).$(Process).err
+output = out/job.$(Cluster).$(Process).out
+
+transfer_input_files = Alice_in_Wonderland.txt
+
+request_cpus   = 1
+request_memory = 1GB
+request_disk   = 1GB
+
+queue 1
