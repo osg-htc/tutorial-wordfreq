@@ -155,7 +155,6 @@ Alice_in_Wonderland.txt
 Dracula.txt
 Huckleberry_Finn.txt
 Pride_and_Prejudice.txt
-Ulysses.txt
 ```
 
 ### Modify the submit file
@@ -204,7 +203,7 @@ Let's submit all of our jobs.:
 condor_submit many-wordcount.sub
 ```
 
-This will now submit five jobs (one for each book on our list). Once all five 
-have finished running, we should see five "counts" files, one for each book in the directory. 
+This will now submit four jobs (one for each book on our list). Once all four 
+have finished running, we should see four "counts" files, one for each book in the directory. 
 
-If you don't see all five "counts" files, consider investigating the log, error, and output files and see if you can identify what caused that to happen.
+If you don't see all four "counts" files, consider investigating the log, error, and output files and see if you can identify what caused that to happen.
