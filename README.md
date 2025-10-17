@@ -25,6 +25,10 @@ Get the materials:
 	cd tutorial-wordfreq
 	```
 
+> If you would prefer to follow along in a Jupyter Notebook, you can also find this tutorial in `Wordcount_Tutorial.ipynb`. This repository and the notebook are available through the OSPool Guest Account on the [Notebooks server](https://notebook.ospool.osg-htc.org/hub/).
+> 
+> To use the guest notebook, simply login with your institutional credentials, select the "Guest Account: Explore OSPool Notebooks" option, and then open the `Wordcount_Tutorial.ipynb` notebook from the 'tutorial-wordfreq' directory.
+
 ## Submit a single task: analyze one book
 
 ### Test the command
